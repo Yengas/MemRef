@@ -1,0 +1,20 @@
+{
+	"manifest_version": 2,
+	"name": "MemRef",
+	"version": "0.1",
+	"description": "Tracks clicked links on ycombinator and reddit.",
+	"author": "Yengas",
+	
+	"permissions": ["storage"],
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://news.ycombinator.com/*", "*://*.reddit.com/*"],
+			"js": ["tracker.js"]
+		}
+	],
+	"options_page": "options.html"
+}

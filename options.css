@@ -1,0 +1,14 @@
+.log > a {
+	margin-right: 3px;
+}
+
+.log > span{
+	color: #888;
+	font-size: x-small;
+	margin-right: 3px;
+}
+
+.log  > img{
+	width: 16px;
+	height: 16px;
+}
