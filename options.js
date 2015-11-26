@@ -73,7 +73,7 @@ function initialize(logs){
 window.addEventListener("DOMContentLoaded", function(){
 	document.querySelector("#clear").addEventListener("click", clear);
 	
-	chrome.storage.sync.get("history", function(data){
+	chrome.storage.local.get("history", function(data){
 		var history = data["history"] || {}, logs = [];
 		
 		// Visited pages are stored in an object with visited page url as the key and the page_url, time, title and reference site as the value.

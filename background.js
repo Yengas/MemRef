@@ -5,7 +5,7 @@
 var worker = new (function Worker(){
 	var logs = null, onStorageLoad = [], queue = [], working = false;
 	
-	chrome.storage.sync.get("history", function(data){
+	chrome.storage.local.get("history", function(data){
 		if(data == null || "history" in data == false) logs = {};
 		else logs = data["history"] || {};
 		
@@ -34,7 +34,7 @@ var worker = new (function Worker(){
 			
 			logs[data.href] = data;
 			// Store the updated log history and process the next `log add` request by calling the process function when storing completes.
-			chrome.storage.sync.set({"history": logs}, process);
+			chrome.storage.local.set({"history": logs}, process);
 		})();
 	}
 	
@@ -48,7 +48,7 @@ var worker = new (function Worker(){
 		}
 		
 		logs = {};
-		chrome.storage.sync.set({history: {}}, next);
+		chrome.storage.local.set({history: {}}, next);
 	};
 	
 	// Push `log add` request to the queue and call the work function for processing if it isn't working already.
