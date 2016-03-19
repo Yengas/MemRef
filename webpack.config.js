@@ -1,9 +1,13 @@
 module.exports = {
-	context: __dirname + '/options',
-	entry: './index.js',
+	context: __dirname,
+	entry: {
+		'options': './src/options/index.js',
+		'background': './src/background/index.js',
+		'tracker': './src/tracker/index.js'	
+	},
 	output: {
-		path: './',
-		filename: 'options.js'
+		path: './build',
+		filename: '[name].js'
 	},
 	module: {
 		loaders: [
