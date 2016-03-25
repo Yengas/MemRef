@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import LinkList from './LinkList.jsx'
+import style from './App.css'
 
 class App extends React.Component{
 	constructor(props){
@@ -68,18 +69,20 @@ class App extends React.Component{
 				<h1>MemRef | Options</h1>
 				{this.state.filters.map((filter) => {
 					return filter == this.state.selected.filter ?
-						(<span>{filter}</span>)
+						(<span className={style.selected}>{filter}</span>)
 						:
-						(<a href="#" onClick={this.onFilterClick}>{filter}</a>);	
+						(<a href="#" onClick={this.onFilterClick} className={style.category}>{filter}</a>);	
 				})}
-				<span>Current Page: {this.state.selected.page + 1}</span>
+				<span className={style.page_info}>Current Page: <span className={style.page}>{this.state.selected.page + 1}</span></span>
 				<LinkList logs={this.state.logs} />
 				<ReactPaginate 
 					pageNum={Math.ceil(this.state.filtered.length / this.props.perPage)}
 					forceSelected={this.state.selected.page}
 					marginPagesDisplayed={2}
 					clickCallback={this.handlePageClick}
-					pageRangeDisplayed={5} />
+					pageRangeDisplayed={5}
+					containerClassName={style.pagination}
+				       	/>
 			</div>
 		);	
 	}

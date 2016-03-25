@@ -1,0 +1,23 @@
+.selected, .category{
+	padding: 0 3px;
+}
+
+.page_info{
+	display: block;
+}
+
+.page{
+	color: green;
+	font: bold 1.5em;
+}
+
+
+.pagination, .pagination ul{
+	list-style-type: none;
+	padding: 0;
+}
+
+.pagination li{
+	display: inline-block;
+	padding: 0 3px;
+}

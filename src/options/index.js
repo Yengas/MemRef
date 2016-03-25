@@ -1,3 +1,4 @@
+require('file?name=options.html!./index.html');
 import ReactDOM from 'react-dom'
 import App from './components/App.jsx'
 
