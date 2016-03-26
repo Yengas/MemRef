@@ -14,6 +14,36 @@ If you click on stories with the left mouse button or right click and use to con
 
 You can go to options page of the MemRef addon to see your reddit/ycombinator history.
 
+## Structure
+````
+.
+├── package.json                # Required libraries, meta data and start script
+├── README.md                   # This file
+├── src                         # Project source code
+│   ├── background              # Background script that handles chrome storage
+│   │   └── index.js
+│   ├── options                 # Options page
+│   │   ├── components          # React components
+│   │   │   ├── App.css         # CSS file for the options page
+│   │   │   ├── App.jsx         # Options page with pagination and other buttons
+│   │   │   ├── Link.css        # Story link component
+│   │   │   ├── Link.jsx        # Link css file
+│   │   │   └── LinkList.jsx    # LinkList that shows a list of Link components
+│   │   ├── index.html          # Options page HTML
+│   │   └── index.js            # Options page script
+│   └── tracker
+│       └── index.js            # Tracker script that runs on every reddit/ycombinator tab
+├── static
+│   ├── externals               # Client side libraries used in ui
+│   │   ├── react-dom.min.js
+│   │   └── react.min.js
+│   ├── icons                   # Icons used in options page
+│   │   ├── reddit.ico
+│   │   └── ycombinator.ico
+│   └── manifest.json           # Chrome extension manifest file
+└── webpack.config.js           # Webpack config for building the project
+````
+
 ## Changes
 I started to play around with this project after noticing that i have been using it actively for the last 4 months. These are the changes i have made so far.
 
