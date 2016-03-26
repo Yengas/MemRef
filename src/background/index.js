@@ -2,67 +2,68 @@
 	An instance of a worker to hold the state of the current log history(logs) and logs to append to this history(queue)
 	This worker is coded so we can have a persistent history while getting request of log adds from multiple content scripts
 */
-var worker = new (function Worker(){
-	var logs = null, onStorageLoad = [], queue = [], working = false;
-	
-	chrome.storage.local.get("history", function(data){
-		if(data == null || "history" in data == false) logs = {};
-		else logs = data["history"] || {};
-		
-		(function call(i){
-			if(typeof onStorageLoad[i] == "function") onStorageLoad[i](logs, function(){ call(i + 1); }); 
-		})(0);
-	});
-	
-	function work(_, next){
-		// If we get a request of `log add` before we finish retrieving history from the chrome storage, wait for the retrieving to finish.
-		if(logs == null){
-			if(onStorageLoad.indexOf(work) == -1) onStorageLoad.push(work);
-			return;
-		}
-		
-		// Set working true while processing the `log add` requests. So only one work function will be executed when we recieve multiple add requests.
-		working = true;
-		(function process(){
-			if(queue.length == 0){
-				working = false;
-				if(typeof next == "function") next();
-				return;
-			}
-			
-			var data = queue.pop();
-			
-			logs[data.href] = data;
-			// Store the updated log history and process the next `log add` request by calling the process function when storing completes.
-			chrome.storage.local.set({"history": logs}, process);
-		})();
+class Worker{
+	constructor(){
+		this.logs = null;
+		this.queue = this._refresh();
 	}
-	
-	// Clear the log history.
-	Worker.prototype.clear = function(_, next){
-		// If we get a `clear` request before we retrieve the log history, wait for the retrieving to finish and then clear the history.
-		if(logs == null){
-			// Make sure the clear function is the first to be called after the retrieving of the log history completes.
-			if(onStorageLoad[0] != this.clear) onStorageLoad.unshift(this.clear);
-			return;
-		}
-		
-		logs = {};
-		chrome.storage.local.set({history: {}}, next);
-	};
-	
-	// Push `log add` request to the queue and call the work function for processing if it isn't working already.
-	Worker.prototype.add = function(data){
-		queue.push(data);
-		if(working == false) work();
+
+	_add(...data){
+		data.forEach((log) => {
+			console.log("Adding:", log);
+			this.logs[log.href] = log;	
+		});
+
+		return new Promise((resolve, reject) => {
+			chrome.storage.local.set({history: this.logs}, () => { console.log("Add done."); resolve(); });	
+		});
 	}
-})();
+
+	_clear(){
+		this.logs = {};
+		return new Promise((resolve, reject) => {
+			console.log("Setting clear...");
+			chrome.storage.local.set({ history: null }, () => { console.log("Clear done!"); resolve(); });	
+		});
+	}
+
+	_refresh(){
+		return new Promise((resolve, reject) => {
+			chrome.storage.local.get("history", (data) => {
+				if(data == null || "history" in data == false) this.logs = {};
+				else this.logs = data["history"] || {};	
+
+				console.log("Refreshed history.");
+				resolve();
+			});	
+		});	
+	}
+
+	_process(func, ...params){
+		return this.queue = this.queue.then(() => { return func.call(this, ...params); });	
+	}
+
+	add(...data){
+		return this._process(this._add, ...data);	
+	}
+
+	clear(){
+		return this._process(this._clear);	
+	}
+
+	refresh(){
+		return this._process(this._refresh);	
+	}
+}
+
+console.log("Background script started...");
+let worker = new Worker();
 
 // Wait for a port to be opened between this script and a content/options page script.
 chrome.runtime.onConnect.addListener(function(port){
 	port.onMessage.addListener(function(request){
 		// Check if we got a `log add` or `clear` request.
 		if(request.add != undefined) worker.add(request.add);
-		else if(request.clear == true) worker.clear();
+		else if(request.clear === true) worker.clear().then(() => port.postMessage({ done: true }));
 	});
 });

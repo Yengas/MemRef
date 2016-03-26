@@ -59,14 +59,29 @@ class App extends React.Component{
 		this.setState({ selected: {page: 0, filter}, filtered, logs: this.getLogRange(filtered, 0, this.props.perPage)});
 	}
 
+	clearClicked = (e) => {
+		if(window.confirm("Are you sure? All of your precious history will be removed.")){
+			let port = chrome.runtime.connect({ name: "options" });
+
+			port.onMessage.addListener(() => {
+				port.disconnect();	
+				location.reload();
+			});
+			port.postMessage({clear: true});
+		}	
+	};
+
 	render(){
-		if(this.props.history.length == 0){
+		if(typeof this.props.history != "object" || this.props.history.length == 0){
 			return (<h1>Found nothing!</h1>);	
 		}
 
 		return (
 			<div width="100%" height="100%">
 				<h1>MemRef | Options</h1>
+				<div className={style.manage}>
+					<input type={"button"} onClick={this.clearClicked} value={"Clear History"} />
+				</div>
 				{this.state.filters.map((filter) => {
 					return filter == this.state.selected.filter ?
 						(<span className={style.selected}>{filter}</span>)
