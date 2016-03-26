@@ -16,9 +16,11 @@ You can go to options page of the MemRef addon to see your reddit/ycombinator hi
 
 ## Changes
 I started to play around with this project after noticing that i have been using it actively for the last 4 months. These are the changes i have made so far.
+
 ### 1.1.0
-- Added navigation(Left/Right arrow or Page buttons at the bottom of the page)
+- Added navigation.(Left/Right arrow or Page buttons at the bottom of the page)
 - Clear history button refreshes the options page after clearing the story history.
-- Organized codebase, converted to es2015, started using npm, webpack, react
+- Organized codebase, converted to es2015, started using npm, webpack, react.
+
 ### 1.0.0
 - Simple functionality with single page ui.
