@@ -1,6 +1,6 @@
 {
   "name": "memref",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Memref is a chrome addon written to keep track of reddit/hackernews history.",
   "main": "background.js",
   "scripts": {
